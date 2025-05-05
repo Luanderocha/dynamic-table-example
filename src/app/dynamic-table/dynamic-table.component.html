@@ -1,0 +1,74 @@
+<table>
+  <thead>
+    <tr>
+      <!-- Itera sobre o array 'columns' para criar os cabeçalhos -->
+      <th
+        *ngFor="let col of columns"
+        [attr.role]="col.sortable ? 'button' : null"
+        [tabindex]="col.sortable ? 0 : -1"
+        (click)="col.sortable ? sortTable(col.field) : null"
+        (keydown.enter)="col.sortable ? sortTable(col.field) : null"
+        [class.sortable]="col.sortable"
+        [class.sorted-asc]="
+          sortedColumn === col.field && sortDirection === 'asc'
+        "
+        [class.sorted-desc]="
+          sortedColumn === col.field && sortDirection === 'desc'
+        "
+      >
+        {{ col.header }}
+        <!-- Exibe o texto do cabeçalho definido em cada objeto de coluna -->
+        <!-- Indicador de Ordenação (Opcional) -->
+        <span
+          *ngIf="
+            col.sortable &&
+            sortedColumn === col.field &&
+            sortDirection === 'asc'
+          "
+        >
+          ▲</span
+        >
+        <span
+          *ngIf="
+            col.sortable &&
+            sortedColumn === col.field &&
+            sortDirection === 'desc'
+          "
+        >
+          ▼</span
+        >
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- Itera sobre o array 'paginatedData' para criar as linhas da tabela -->
+    <tr *ngFor="let row of paginatedData">
+      <!-- Para cada linha, itera novamente sobre as 'columns' para criar as células -->
+      <td *ngFor="let col of columns">
+        <!-- Acessa o valor da célula usando a propriedade 'field' da coluna como chave no objeto da linha -->
+        {{ row[col.field] }}
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- Controles de Paginação -->
+<!-- Mostra os controles apenas se houver mais itens do que o limite por página -->
+<div class="pagination-controls" *ngIf="data && data.length > itemsPerPage">
+  <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">
+    Anterior
+  </button>
+
+  <span>
+    Página {{ currentPage }} de {{ totalPages }}
+    <!-- Exibe a faixa de itens visíveis -->
+    ({{ (currentPage - 1) * itemsPerPage + 1 }} - {{ Math.min(currentPage * itemsPerPage, data.length) }} de {{ data.length }})
+  </span>
+
+  <button (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">
+    Próxima
+  </button>
+</div>
+
+<!-- Mensagem opcional se não houver dados -->
+<div *ngIf="!data || data.length === 0">Nenhum dado para exibir.</div>

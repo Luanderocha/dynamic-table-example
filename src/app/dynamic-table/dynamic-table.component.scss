@@ -1,0 +1,50 @@
+// Estilos para a tabela dinâmica
+
+table {
+  width: 100%; // Faz a tabela ocupar toda a largura disponível
+  border-collapse: collapse; // Junta as bordas das células
+  margin-top: 1em; // Adiciona um espaço acima da tabela
+  font-family: sans-serif; // Define uma fonte padrão
+}
+
+th,
+td {
+  border: 1px solid #ddd; // Adiciona uma borda cinza claro
+  padding: 8px; // Adiciona espaçamento interno nas células
+  text-align: left; // Alinha o texto à esquerda
+}
+
+th {
+  background-color: #f2f2f2; // Adiciona um fundo cinza claro ao cabeçalho
+  font-weight: bold; // Deixa o texto do cabeçalho em negrito
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9; // Adiciona um fundo levemente diferente para linhas pares (efeito zebra)
+}
+
+tr:hover {
+  background-color: #e9e9e9; // Muda o fundo da linha ao passar o mouse
+}
+
+// Estilo para a mensagem de "Nenhum dado"
+div[ngif] {
+  // Seleciona o div que tem o *ngIf (pode precisar ajustar se tiver outros ngIf)
+  margin-top: 1em;
+  font-style: italic;
+  color: #777;
+}
+
+// Estilos para os controles de paginação
+.pagination-controls {
+  margin-top: 1em;
+  display: flex;
+  justify-content: space-between; // Ou center, flex-end, etc.
+  align-items: center;
+  padding: 0.5em 0;
+
+  button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
