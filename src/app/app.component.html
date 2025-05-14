@@ -1,5 +1,10 @@
 <h1>Minha Tabela Dinâmica</h1>
 
+<button class="theme-toggle-button" (click)="toggleTheme()">
+  Alternar para {{ isDarkMode ? 'Modo Claro' : 'Modo Escuro' }}
+</button>
+<hr class="theme-divider">
+
 <app-dynamic-table
   [columns]="colunasTabela"
   [data]="dadosTabela"
@@ -10,3 +15,7 @@
 </app-dynamic-table>
 
 <!-- Outro conteúdo do seu app.component.html pode estar aqui -->
+
+<div class="select-component">
+  <app-select-custom></app-select-custom>
+</div>

@@ -1,0 +1,22 @@
+<div class="custom-select" (click)="toggleOptions()" [class.open]="isOpen">
+  <div class="selected-option">
+    {{ displayLabel }}
+    <span class="select-custom-icon">▼</span> <!-- Placeholder para o ícone -->
+  </div>
+  <ul
+    #optionsList
+    class="options"
+    [class.open]="isOpen"
+    [class.drop-up]="actualDropDirection === 'up'"
+    [style.maxHeight.px]="isOpen ? optionsMaxHeight : 0"
+  >
+    <li
+      *ngFor="let item of suaLista"
+      [class.selected]="item.value === selectedValue"
+      (click)="selectOption(item); $event.stopPropagation()"
+    >
+      {{ item.label }}
+    </li>
+  </ul>
+  <input type="hidden" [value]="selectedValue" />
+</div>

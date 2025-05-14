@@ -1,0 +1,79 @@
+// /home/luanderson/projects/custom-table/src/app/app.component.scss
+
+.theme-toggle-button {
+  padding: 8px 15px;
+  margin-bottom: 15px;
+  cursor: pointer;
+  background-color: var(--primary-color);
+  color: var(--background-color); // Cor de texto que contrasta com o primário
+  border: 1px solid var(--primary-color);
+  border-radius: 4px;
+  font-weight: bold;
+  transition: background-color var(--theme-transition-duration) ease,
+    color var(--theme-transition-duration) ease,
+    border-color var(--theme-transition-duration) ease;
+
+  &:hover {
+    opacity: 0.85;
+  }
+}
+
+.theme-divider {
+  border: none;
+  border-top: 1px solid var(--border-color);
+  margin-bottom: 20px;
+  transition: border-top-color var(--theme-transition-duration) ease;
+}
+
+.select-component {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: var(--card-background);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  transition: background-color var(--theme-transition-duration) ease,
+    border-color var(--theme-transition-duration) ease;
+}
+
+/*
+    Estilizando app-dynamic-table:
+    Para que app-dynamic-table responda ao tema, ele também precisa usar
+    variáveis CSS em seus próprios estilos internos, ou você pode tentar
+    estilizá-lo externamente usando ::ng-deep (com cautela).
+  */
+app-dynamic-table {
+  display: block; /* Garante que o componente se comporte como um bloco */
+  margin-bottom: 20px;
+
+  /*
+      Exemplo de como você poderia tentar estilizar partes da tabela se ela não
+      suportar temas nativamente. Isso depende da estrutura interna da tabela.
+      Use o inspetor do navegador para encontrar os seletores corretos.
+    */
+
+  // Exemplo: Estilizando cabeçalhos de tabela
+  // :host ::ng-deep .table-header-class, // Se a tabela usa classes específicas
+  // :host ::ng-deep th {
+  //   background-color: var(--table-header-bg) !important;
+  //   color: var(--table-header-text) !important;
+  //   border-bottom: 2px solid var(--border-color) !important;
+  //   transition: background-color var(--theme-transition-duration) ease,
+  //               color var(--theme-transition-duration) ease,
+  //               border-bottom-color var(--theme-transition-duration) ease;
+  // }
+
+  // Exemplo: Estilizando células de tabela
+  // :host ::ng-deep .table-cell-class, // Se a tabela usa classes específicas
+  // :host ::ng-deep td {
+  //   border-bottom: 1px solid var(--table-row-border-color) !important;
+  //   color: var(--text-color) !important; /* Herda da body ou define especificamente */
+  //   transition: border-bottom-color var(--theme-transition-duration) ease,
+  //               color var(--theme-transition-duration) ease;
+  // }
+
+  // Exemplo: Hover em linhas da tabela
+  // :host ::ng-deep .table-row-class:hover td, // Se a tabela usa classes específicas
+  // :host ::ng-deep tr:hover td {
+  //   background-color: var(--table-row-hover-bg) !important;
+  // }
+}

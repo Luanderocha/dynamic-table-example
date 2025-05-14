@@ -1,0 +1,104 @@
+// /home/luanderson/projects/custom-table/src/app/select-custom/select-custom.component.scss
+.custom-select {
+  position: relative;
+  width: 200px; /* Ou a largura desejada */
+  border: 1px solid var(--select-border-color);
+  border-radius: 4px;
+  background-color: var(--select-background);
+  color: var(--select-text-color);
+  cursor: pointer;
+  transition: border-color var(--theme-transition-duration) ease,
+    background-color var(--theme-transition-duration) ease,
+    color var(--theme-transition-duration) ease;
+
+  .selected-option {
+    padding: 10px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .select-custom-icon {
+    display: inline-block;
+    transition: transform 0.2s ease;
+    margin-left: 8px;
+    color: var(--select-arrow-color);
+  }
+
+  // Estilo do container principal quando aberto
+  &.open {
+    // Exemplo: pode mudar a cor da borda quando aberto
+    // border-color: var(--primary-color);
+    .select-custom-icon {
+      transform: rotate(180deg); // Seta para cima quando aberto
+    }
+  }
+
+  .options {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    position: absolute;
+    left: -1px; // Ajuste para alinhar com a borda do select
+    right: -1px; // Ajuste para alinhar com a borda do select
+    border: 1px solid var(--select-border-color);
+    background-color: var(--select-options-background);
+    max-height: 0; // Estado inicial para transição
+    overflow-y: hidden;
+    opacity: 0;
+    visibility: hidden;
+    z-index: 1000;
+    transition: max-height 0.3s ease, opacity 0.3s ease, visibility 0.3s ease,
+      background-color var(--theme-transition-duration) ease,
+      border-color var(--theme-transition-duration) ease;
+
+    &.open {
+      opacity: 1;
+      visibility: visible;
+      // max-height é controlado por [style.maxHeight.px] no template
+    }
+
+    // Estilos para dropdown (padrão)
+    &:not(.drop-up) {
+      top: calc(100% - 1px); // Sobrepõe a borda inferior do select
+      border-top: none;
+      border-radius: 0 0 4px 4px;
+    }
+
+    // Estilos para dropup
+    &.drop-up {
+      bottom: calc(100% - 1px); // Sobrepõe a borda superior do select
+      top: auto;
+      border-bottom: none;
+      border-radius: 4px 4px 0 0;
+    }
+
+    li {
+      padding: 10px 12px;
+      cursor: pointer;
+      color: var(--select-text-color);
+      transition: background-color 0.2s ease,
+        color var(--theme-transition-duration) ease;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+
+      &:hover {
+        background-color: var(--select-hover-background);
+      }
+
+      &.selected {
+        // Estilo opcional para o item atualmente selecionado na lista
+        // background-color: var(--select-hover-background);
+        // font-weight: bold;
+      }
+    }
+  }
+
+  input[type="hidden"] {
+    display: none;
+  }
+}
