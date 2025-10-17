@@ -1,5 +1,6 @@
 import { DOCUMENT } from '@angular/common';
 import { Component, Inject, OnInit, Renderer2 } from '@angular/core';
+import { Step } from './stepper/step.interface';
 
 @Component({
   selector: 'app-root',
@@ -135,6 +136,14 @@ export class AppComponent implements OnInit {
       test4: 'test4',
       test5: 'test5',
     }, // Adicionado mais um
+  ];
+
+  meusSteps: Step[] = [
+    { label: 'Dados Cadastrais' },
+    { label: 'Empresas, Contas e Perfis' },
+    { label: 'Valor de alçada' },
+    { label: 'Etapa louca' },
+    { label: 'Confirmação' },
   ];
 
   isDarkMode = false;

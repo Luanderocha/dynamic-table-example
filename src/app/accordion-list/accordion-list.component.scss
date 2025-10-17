@@ -1,0 +1,72 @@
+/* src/app/accordion-list/accordion-list.component.scss */
+
+.tabela-linha {
+  border-bottom: 1px solid #E0E0E0;
+}
+
+.titulo-formatado {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.identificacao-empresa {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cnpj {
+  font-weight: 500;
+  color: #333;
+}
+
+.nome-empresa {
+  font-size: 0.9em;
+  color: #666;
+}
+
+.status-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.8em;
+  font-weight: 500;
+
+  &.configurada { background-color: #E0F2F1; color: #00796B; }
+  &.pendente { background-color: #FFF3E0; color: #F57C00; }
+}
+
+// --- NOVOS ESTILOS PARA A TABELA DE CONTAS ---
+
+.conteudo-accordion {
+  padding-left: 32px; // Adiciona um recuo para o conteúdo interno
+}
+
+.accounts-table {
+  width: 100%;
+  font-size: 0.9rem;
+}
+
+.accounts-header, .account-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.5fr 2fr; // 4 colunas com tamanhos relativos
+  gap: 16px;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #EEE;
+}
+
+.accounts-header {
+  font-weight: bold;
+  color: #555;
+  border-bottom: 2px solid #DDD;
+}
+
+.account-row .cell select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #CCC;
+  border-radius: 4px;
+  background-color: white;
+}

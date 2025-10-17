@@ -1,0 +1,40 @@
+<section class="ui-kit-accordion"
+         [ngStyle]="{'box-shadow': !isOpen ? '0px -1px 0px 0px #E0E0E0 inset' : 'none'}">
+  <header>
+    <button *ngIf="title; else customHeader"
+            class="flex justify-between body p-none align-center"
+            [attr.aria-expanded]="isOpen"
+            [attr.aria-controls]="contentId" (click)="toggle()">
+      {{ title }}
+      <span *ngIf="!disabled" class="accordion-arrow" [class.up]="isOpen"></span>
+    </button>
+    
+    <ng-template #customHeader>
+      <div class="header-container">
+        <input 
+          type="checkbox" 
+          class="accordion-checkbox"
+          [checked]="checked"
+          (change)="onCheckboxChange($event)"
+          (click)="$event.stopPropagation()"
+        />
+        <div class="custom-title-content" 
+             (click)="toggle()"
+             (keydown.enter)="toggle()"
+             (keydown.space)="toggle()"
+             tabindex="0"
+             [attr.aria-expanded]="isOpen"
+             [attr.aria-controls]="contentId"> <ng-content select="[custom-title]"></ng-content>
+          <span *ngIf="!disabled" class="accordion-arrow" [class.up]="isOpen"></span>
+        </div>
+      </div>
+    </ng-template>
+  </header>
+
+  <div class="ui-kit-accordion__container" #bodyEl 
+       [id]="contentId" [attr.arialabelledby]="contentId + '-header'">
+    <div class="ui-kit-accordion__container__content">
+      <ng-content></ng-content>
+    </div>
+  </div>
+</section>

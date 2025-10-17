@@ -1,0 +1,131 @@
+// Cores para fácil manutenção
+$primary-color: #007bff;
+$inactive-color: #ccc;
+$text-color: #999;
+
+// TAMANHOS DOS CÍRCULOS
+$circle-size: 32px;
+$circle-size-inactive: 16px; // Mantendo o tamanho de teste que você pediu
+
+$line-height: 2px;
+
+.stepper {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.steps {
+  display: flex;
+  // Alinha todos os 'step-wrapper' pela base, garantindo consistência
+  align-items: flex-end;
+}
+
+.step-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative; // Essencial para a linha
+
+  &.completed,
+  &.active {
+    .label {
+      color: $primary-color;
+      font-weight: 600;
+    }
+  }
+
+  &.completed .circle {
+    width: $circle-size;
+    height: $circle-size;
+    background-color: $primary-color;
+    color: white;
+    border-color: $primary-color;
+  }
+
+  &.active .circle {
+    width: $circle-size;
+    height: $circle-size;
+    border-color: $primary-color;
+    color: $primary-color;
+  }
+}
+
+// O contêiner do círculo volta a ser simples, sem posicionamento relativo
+.circle-container {
+  width: $circle-size;
+  height: $circle-size;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// A LÓGICA DE ALINHAMENTO DEFINITIVA
+.line-container {
+  position: absolute;
+  // Alinha a base da linha com a base do wrapper, e sobe metade da altura do círculo grande,
+  // menos metade da altura da própria linha. Isso centraliza matematicamente.
+  bottom: calc(($circle-size / 2) - ($line-height / 2));
+  left: 50%;
+  width: 100%;
+  height: $line-height;
+  z-index: 1;
+}
+
+.line-background,
+.line-progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+}
+
+.line-background {
+  width: 100%;
+  background-color: $inactive-color;
+}
+
+.line-progress {
+  width: 0;
+  background-color: $primary-color;
+  transition: width 0.15s ease-in-out;
+
+  &.half {
+    width: 50%;
+    transition-delay: 0.15s;
+  }
+
+  &.full {
+    width: 100%;
+  }
+}
+
+.label {
+  font-size: 14px;
+  color: $text-color;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.circle {
+  box-sizing: border-box;
+  width: $circle-size-inactive;
+  height: $circle-size-inactive;
+  border-radius: 50%;
+  border: 2px solid $inactive-color;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 16px;
+  z-index: 2;
+  position: relative;
+  transition: width 0.3s ease, height 0.3s ease, border-color 0.3s ease,
+    background-color 0.3s ease;
+}
+
+.actions {
+  margin: 100px;
+}

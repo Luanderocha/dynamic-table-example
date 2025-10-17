@@ -1,0 +1,37 @@
+<div class="steps">
+  <ng-container *ngFor="let step of steps; let i = index; let last = last">
+  <div class="step-wrapper"
+       [class.active]="i === currentStepIndex"
+       [class.completed]="i < currentStepIndex">
+
+    <div class="label">{{ step.label }}</div>
+    
+    <div class="circle-container">
+      <div class="circle">
+        <ng-container *ngIf="i < currentStepIndex">✓</ng-container>
+        <ng-container *ngIf="i === currentStepIndex">{{ i + 1 }}</ng-container>
+      </div>
+    </div>
+
+    <div *ngIf="!last" class="line-container">
+      <div class="line-background"></div>
+      <div class="line-progress"
+           [class.half]="i === currentStepIndex"
+           [class.full]="i < currentStepIndex">
+      </div>
+    </div>
+  </div>
+</ng-container>
+</div>
+
+<div class="actions">
+  <button (click)="previousStep()" [disabled]="currentStepIndex === 0">
+    Voltar
+  </button>
+  <button
+    (click)="nextStep()"
+    [disabled]="currentStepIndex === steps.length - 1"
+  >
+    Avançar
+  </button>
+</div>

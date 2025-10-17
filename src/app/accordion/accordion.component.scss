@@ -1,0 +1,57 @@
+/* src/app/accordion/accordion.component.scss */
+
+.ui-kit-accordion {
+  header button {
+    width: 100%;
+    border: none;
+    background-color: transparent;
+  }
+
+  &__container {
+    height: 0;
+    overflow: hidden;
+    transition: height 250ms ease;
+
+    &__content {
+      padding: 24px 0;
+    }
+  }
+}
+
+// Estilos para a seta CSS
+.accordion-arrow {
+  display: inline-block;
+  border: solid #333;
+  border-width: 0 2px 2px 0;
+  padding: 3px;
+  transition: transform 250ms ease;
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+
+  &.up {
+    transform: rotate(-135deg);
+    -webkit-transform: rotate(-135deg);
+  }
+}
+
+// --- NOVOS ESTILOS para o cabeçalho customizado ---
+.header-container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 16px 0; // Um espaçamento vertical para o header
+}
+
+.accordion-checkbox {
+  margin-right: 16px; // Espaçamento entre o checkbox e o título
+  cursor: pointer;
+}
+
+.custom-title-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-grow: 1;
+  cursor: pointer;
+}
+// ----------------------------------------------------

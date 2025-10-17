@@ -1,21 +1,35 @@
-<h1>Minha Tabela Dinâmica</h1>
-
-<button class="theme-toggle-button" (click)="toggleTheme()">
-  Alternar para {{ isDarkMode ? 'Modo Claro' : 'Modo Escuro' }}
-</button>
-<hr class="theme-divider">
-
-<app-dynamic-table
+<!-- <app-dynamic-table
   [columns]="colunasTabela"
   [data]="dadosTabela"
   [itemsPerPage]="itemsPerPage"
   [currentPage]="currentPage"
   (pageChange)="onPageChanged($event)"
 >
-</app-dynamic-table>
+</app-dynamic-table> -->
 
 <!-- Outro conteúdo do seu app.component.html pode estar aqui -->
 
-<div class="select-component">
+<!-- <div class="select-component">
   <app-select-custom></app-select-custom>
-</div>
+</div> -->
+<!-- <div style="margin: 100px;">
+  <app-stepper [steps]="meusSteps" #stepper>
+    <ng-container *ngIf="stepper.currentStepIndex === 0">
+      <p>Conteúdo do Step 1: Login</p>
+    </ng-container>
+
+    <ng-container *ngIf="stepper.currentStepIndex === 1">
+      <p>Conteúdo do Step 2: Meu Perfil</p>
+    </ng-container>
+
+    <ng-container *ngIf="stepper.currentStepIndex === 2">
+      <p>Conteúdo do Step 3: Gestão de Perfis</p>
+    </ng-container>
+
+    <ng-container *ngIf="stepper.currentStepIndex === 3">
+      <p>Conteúdo do Step 4: Confirmação</p>
+    </ng-container>
+  </app-stepper>
+</div> -->
+
+<app-accordion-list></app-accordion-list>
