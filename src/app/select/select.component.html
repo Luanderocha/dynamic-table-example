@@ -1,0 +1,18 @@
+<div class="custom-select-container">
+  <div class="selected-value-box" (click)="toggleDropdown()" [class.open]="isOpen">
+    <span class="selected-label">{{ selectedLabel }}</span>
+    
+    <span class="icon-container">
+      <ng-container *ngIf="!isOpen; else chevronUp">
+         <span>▼</span> </ng-container>
+      <ng-template #chevronUp>
+         <span>▲</span> </ng-template>
+    </span>
+  </div>
+
+  <ul class="options-list" *ngIf="isOpen">
+    <li *ngFor="let option of options" (click)="selectOption(option)">
+      {{ option[optionLabel] }}
+    </li>
+  </ul>
+</div>

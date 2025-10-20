@@ -1,8 +1,16 @@
-<form [formGroup]="form" class="tabela-container">
+<div *ngIf="isLoadingClients">
+  Carregando lista de clientes...
+</div>
+
+<form [formGroup]="form" class="tabela-container" *ngIf="!isLoadingClients">
   <div formArrayName="clients">
     <div *ngFor="let client of clients.controls; let i = index" class="tabela-linha">
       <div [formGroupName]="i">
-        <app-accordion formControlName="isSelected">
+        
+        <app-accordion 
+          #acc 
+          formControlName="isSelected"
+          (opened)="onAccordionOpen(client, acc)">
           
           <div custom-title class="titulo-formatado">
             <div class="identificacao-empresa">
@@ -15,32 +23,44 @@
           </div>
           
           <div class="conteudo-accordion">
-            <div formArrayName="accounts" class="accounts-table">
+            
+            <div *ngIf="client.get('isLoadingDetails')?.value" style="padding: 24px; text-align: center;">
+              Carregando detalhes da conta...
+            </div>
+
+            <div formArrayName="accounts" class="accounts-table" *ngIf="!client.get('isLoadingDetails')?.value">
+              
               <div class="accounts-header">
                 <div class="header-item">Conta</div>
-                <div class="header-item">Tipo de Conta</div>
+                <div class="header-item">Agência</div>
                 <div class="header-item">Modalidade</div>
                 <div class="header-item">Perfil de Acesso</div>
               </div>
 
               <div *ngFor="let account of getAccountControls(client); let j = index">
-              <div [formGroupName]="j" class="account-row">
+                <div [formGroupName]="j" class="account-row">
                   <div class="cell">{{ account.get('accountNumber')?.value }}</div>
-                  <div class="cell">{{ account.get('accountType')?.value }}</div>
+                  <div class="cell">{{ account.get('branchNumber')?.value }}</div>
                   <div class="cell">{{ account.get('accountModel')?.value }}</div>
+                  
                   <div class="cell">
-                    <select formControlName="accessProfile">
-                      <option [ngValue]="null">Selecione o Perfil</option>
-                      <option *ngFor="let profile of client.get('profiles')?.value" [value]="profile.id">
-                        {{ profile.name }}
-                      </option>
-                    </select>
-                  </div>
+                    <app-select
+                      formControlName="accessProfile"
+                      [options]="getProfileOptions(client)"
+                      optionValue="profileId"
+                      optionLabel="profileName"
+                      placeholder="Selecione o Perfil">
+                    </app-select>
+                    </div>
+
                 </div>
               </div>
+
             </div>
           </div>
-        </app-accordion>
+          
+        </app-accordion> 
+
       </div>
     </div>
   </div>
@@ -49,5 +69,3 @@
     <button type="button" (click)="onSubmit()">Salvar e Ver no Console</button>
   </div>
 </form>
-
-<pre>{{ form.value | json }}</pre>

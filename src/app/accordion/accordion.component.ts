@@ -28,7 +28,6 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
     }
   ]
 })
-// O ngAfterViewChecked não é mais necessário aqui
 export class AccordionComponent implements OnInit, AfterViewInit, OnChanges, ControlValueAccessor {
 
   @Input() title: string = '';
@@ -42,9 +41,6 @@ export class AccordionComponent implements OnInit, AfterViewInit, OnChanges, Con
 
   public contentId: string = '';
   public checked: boolean = false;
-
-  // A propriedade 'shouldUpdateHeight' foi removida.
-  // A propriedade 'lastHeight' foi removida.
 
   private onChange: (value: boolean) => void = () => {};
   private onTouched: () => void = () => {};
@@ -62,20 +58,15 @@ export class AccordionComponent implements OnInit, AfterViewInit, OnChanges, Con
   }
 
   ngAfterViewInit(): void {
-    // Garantimos que ele comece fechado visualmente
     this.setHeight(0);
   }
   
-  // A lógica do isLoading continua útil para o futuro
   ngOnChanges(changes: SimpleChanges): void {
     const isLoading = changes['isLoading']?.currentValue;
-    // Se estiver aberto E o isLoading mudar para true, recalculamos a altura
     if (this.isOpen && isLoading) {
       this.calculateAndSetHeight();
     }
   }
-
-  // O ngAfterViewChecked foi completamente removido.
 
   onCheckboxChange(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -84,7 +75,6 @@ export class AccordionComponent implements OnInit, AfterViewInit, OnChanges, Con
     this.onChange(this.checked);
   }
 
-  // ==================== MÉTODO 'toggle' ATUALIZADO ====================
   toggle(): void {
     if (this.disabled) return;
     
@@ -92,24 +82,29 @@ export class AccordionComponent implements OnInit, AfterViewInit, OnChanges, Con
 
     if (this.isOpen) {
       this.opened.emit();
-      // Em vez de usar uma flag, calculamos a altura diretamente,
-      // mas adiamos com setTimeout para esperar a renderização.
+      // Esta chamada inicial mede o spinner
       this.calculateAndSetHeight();
     } else {
-      // Para fechar, a altura é sempre 0.
       this.setHeight(0);
     }
   }
 
-  // ==================== NOVO MÉTODO HELPER ====================
-  private calculateAndSetHeight(): void {
+  // ==================== MÉTODO ATUALIZADO ====================
+  // Agora é 'public' e verifica se está aberto
+  public calculateAndSetHeight(): void {
+    // Se não estiver aberto, não há o que calcular
+    if (!this.isOpen) {
+      return;
+    }
+    
     setTimeout(() => {
       if (this.bodyEl?.nativeElement) {
         const height = this.bodyEl.nativeElement.scrollHeight;
         this.setHeight(height);
       }
-    }, 0); // O '0' é a chave!
+    }, 0); 
   }
+  // ==========================================================
 
   private setHeight(height: number): void {
     if (this.bodyEl?.nativeElement) {
