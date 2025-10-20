@@ -1,25 +1,27 @@
 /* src/app/accordion-list/accordion-list.component.scss */
 
 .tabela-linha {
-  // border-bottom: 1px solid #E0E0E0; // Linha removida
+  /* (sem estilos aqui) */
 }
 
+/* Estilos do Título Projetado */
 .titulo-formatado {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
+  align-items: center;
+  gap: 16px; // Espaço de 16px entre (CNPJ/Nome) e (Status)
 }
 
-.identificacao-empresa {
+.info-principal {
   display: flex;
-  align-items: center;
-  gap: 12px;
+  flex-direction: column;
+  gap: 4px; // Espaço vertical entre CNPJ e Nome
 }
 
 .cnpj {
   font-weight: 500;
   color: #333;
 }
+
 .nome-empresa {
   font-size: 0.9em;
   color: #666;
@@ -31,16 +33,12 @@
   border-radius: 12px;
   font-size: 0.8em;
   font-weight: 500;
-  &.configurada {
-    background-color: #e0f2f1;
-    color: #00796b;
-  }
-  &.pendente {
-    background-color: #fff3e0;
-    color: #f57c00;
-  }
+  &.configurada { background-color: #E0F2F1; color: #00796B; }
+  &.pendente { background-color: #FFF3E0; color: #F57C00; }
 }
 
+
+/* Estilos da Tabela Interna (Contas) */
 .conteudo-accordion {
   padding-left: 32px;
 }
@@ -50,27 +48,27 @@
   font-size: 0.9rem;
 }
 
-.accounts-header,
+.accounts-header, 
 .account-row {
   display: grid;
-  // Ajustado para 4 colunas: 1fr 1fr 1.5fr 2fr
-  grid-template-columns: 1fr 1fr 1.5fr 2fr;
+  grid-template-columns: 1fr 1fr 1.5fr 2fr; 
   gap: 16px;
   align-items: center;
   padding: 12px 0;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #EEE;
 }
 
 .accounts-header {
   font-weight: bold;
   color: #555;
-  border-bottom: 2px solid #ddd;
+  border-bottom: 2px solid #DDD;
 }
 
+/* Estilos do Botão de Ação */
 .actions-container {
   padding: 24px;
   text-align: right;
-  border-top: 1px solid #e0e0e0;
+  border-top: 1px solid #E0E0E0;
 
   button {
     padding: 10px 20px;
@@ -80,8 +78,6 @@
     border-radius: 4px;
     cursor: pointer;
     font-size: 1rem;
-    &:hover {
-      background-color: #0056b3;
-    }
+    &:hover { background-color: #0056b3; }
   }
 }

@@ -1,24 +1,86 @@
 /* src/app/accordion/accordion.component.scss */
 
 .ui-kit-accordion {
-  header button {
-    width: 100%;
-    border: none;
-    background-color: transparent;
-  }
-
+  /* ... (Estilos do __container permanecem os mesmos) ... */
   &__container {
-    height: 0;
+    max-height: 0;
     overflow: hidden;
-    transition: height 250ms ease;
-
+    transition: max-height 0.25s ease-out;
+    &.open {
+      max-height: 2000px;
+      overflow: visible;
+      transition: max-height 0.4s ease-in;
+    }
     &__content {
       padding: 24px 0;
     }
   }
 }
 
-// Estilos para a seta CSS
+/* ==================== NOVOS ESTILOS DO HEADER ==================== */
+.header-container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 16px 0;
+}
+
+/* Item 1: O Checkbox */
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+  margin-right: 8px; // O espaço de 8px que você pediu
+}
+
+.accordion-checkbox-input {
+  // Esconde o input nativo
+  opacity: 0;
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.checkbox-visual {
+  // A caixa visual
+  display: block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #999;
+  border-radius: 4px;
+  background-color: #fff;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.accordion-checkbox-input:checked + .checkbox-visual {
+  // Caixa visual quando checado
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.accordion-checkbox-input:checked + .checkbox-visual::after {
+  // O "V" de check
+  content: '';
+  position: absolute;
+  left: 6px; // Posição X do "V"
+  top: 3px;  // Posição Y do "V"
+  width: 6px;
+  height: 12px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* Item 2: A Área de Título */
+.title-content-area {
+  flex-grow: 1; // Faz esta área ocupar todo o espaço
+  cursor: pointer;
+}
+
+/* Item 3: A Seta */
 .accordion-arrow {
   display: inline-block;
   border: solid #333;
@@ -26,32 +88,10 @@
   padding: 3px;
   transition: transform 250ms ease;
   transform: rotate(45deg);
-  -webkit-transform: rotate(45deg);
-
+  margin-left: 16px; // Espaço entre o título e a seta
+  cursor: pointer;
+  
   &.up {
     transform: rotate(-135deg);
-    -webkit-transform: rotate(-135deg);
   }
 }
-
-// --- NOVOS ESTILOS para o cabeçalho customizado ---
-.header-container {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  padding: 16px 0; // Um espaçamento vertical para o header
-}
-
-.accordion-checkbox {
-  margin-right: 16px; // Espaçamento entre o checkbox e o título
-  cursor: pointer;
-}
-
-.custom-title-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-grow: 1;
-  cursor: pointer;
-}
-// ----------------------------------------------------

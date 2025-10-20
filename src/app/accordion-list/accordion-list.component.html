@@ -8,18 +8,20 @@
       <div [formGroupName]="i">
         
         <app-accordion 
-          #acc 
           formControlName="isSelected"
-          (opened)="onAccordionOpen(client, acc)">
+          (opened)="onAccordionOpen(client)">
           
           <div custom-title class="titulo-formatado">
-            <div class="identificacao-empresa">
-              <span class="cnpj">{{ client.get('document')?.value }}</span>
-              <span class="status-tag" [ngClass]="client.get('status')?.value.toLowerCase()">
-                {{ client.get('status')?.value }}
-              </span>
+            
+            <div class="info-principal">
+              <div class="cnpj">{{ client.get('document')?.value }}</div>
+              <div class="nome-empresa">{{ client.get('corporateName')?.value }}</div>
             </div>
-            <div class="nome-empresa">{{ client.get('corporateName')?.value }}</div>
+
+            <span class="status-tag" [ngClass]="client.get('status')?.value.toLowerCase()">
+              {{ client.get('status')?.value }}
+            </span>
+
           </div>
           
           <div class="conteudo-accordion">
@@ -42,7 +44,6 @@
                   <div class="cell">{{ account.get('accountNumber')?.value }}</div>
                   <div class="cell">{{ account.get('branchNumber')?.value }}</div>
                   <div class="cell">{{ account.get('accountModel')?.value }}</div>
-                  
                   <div class="cell">
                     <app-select
                       formControlName="accessProfile"
@@ -51,8 +52,7 @@
                       optionLabel="profileName"
                       placeholder="Selecione o Perfil">
                     </app-select>
-                    </div>
-
+                  </div>
                 </div>
               </div>
 
