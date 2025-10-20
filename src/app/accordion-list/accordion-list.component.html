@@ -34,7 +34,7 @@
               
               <div class="accounts-header">
                 <div class="header-item">Conta</div>
-                <div class="header-item">Agência</div>
+                <div class="header-item">Tipo de Conta</div>
                 <div class="header-item">Modalidade</div>
                 <div class="header-item">Perfil de Acesso</div>
               </div>
@@ -42,9 +42,10 @@
               <div *ngFor="let account of getAccountControls(client); let j = index">
                 <div [formGroupName]="j" class="account-row">
                   <div class="cell">{{ account.get('accountNumber')?.value }}</div>
-                  <div class="cell">{{ account.get('branchNumber')?.value }}</div>
+                  <div class="cell">{{ account.get('accountTypeLabel')?.value }}</div>
                   <div class="cell">{{ account.get('accountModel')?.value }}</div>
-                  <div class="cell">
+                  
+                  <div class="cell profile-cell">
                     <app-select
                       formControlName="accessProfile"
                       [options]="getProfileOptions(client)"
@@ -52,11 +53,37 @@
                       optionLabel="profileName"
                       placeholder="Selecione o Perfil">
                     </app-select>
-                  </div>
+
+                    <div class="use-for-all-container">
+                      
+                      <ng-container *ngIf="j === 0">
+                        <input type="checkbox" formControlName="useProfileForAll" id="{{client.get('clientIbpjId')?.value}}-useAll">
+                        <label [for]="client.get('clientIbpjId')?.value + '-useAll'">
+                          Usar esse perfil em todas as contas dessa empresa
+                        </label>
+                      </ng-container>
+
+                    </div>
+                    </div>
                 </div>
               </div>
 
             </div>
+
+            <div class="inner-actions-container" *ngIf="client.get('isDataLoaded')?.value && !client.get('isLoadingDetails')?.value">
+              <button type="button" 
+                      class="btn btn-secondary"
+                      (click)="limparSelecao(client)">
+                  Limpar seleção
+              </button>
+              <button type="button" 
+                      class="btn btn-primary"
+                      [disabled]="client.get('accounts')?.invalid"
+                      (click)="salvarConfiguracao(client)">
+                  Salvar
+              </button>
+            </div>
+
           </div>
           
         </app-accordion> 
@@ -65,7 +92,7 @@
     </div>
   </div>
 
-  <div class="actions-container">
-    <button type="button" (click)="onSubmit()">Salvar e Ver no Console</button>
+  <div class="footer-actions-container">
+    <button type="button" class="btn btn-primary" (click)="onSubmit()">Salvar e Ver no Console</button>
   </div>
 </form>

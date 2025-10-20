@@ -1,3 +1,5 @@
+
+
 // --- Modelos para /clients ---
 export interface Client {
   clientIbpjId: number;
@@ -22,9 +24,10 @@ export interface ClientResponse {
 
 // --- Modelos para /accounts ---
 export interface Account {
-  accountNumber: string; // Ajustado de volta para string
+  accountNumber: string;
   bank: number;
   accountType: number;
+  accountTypeLabel: string; 
   accountModel: string;
   branchNumber: string;
 }

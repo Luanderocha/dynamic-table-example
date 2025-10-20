@@ -1,16 +1,20 @@
+// mock/data/accounts-profiles.js
+
 const accountsProfilesResponse = {
   accounts: [
     {
-      accountNumber: "4.785.096-7", 
+      accountNumber: "4.785.096-7",
       bank: 161,
       accountType: 5,
-      accountModel: "Conta Investimento - PJ", 
+      accountTypeLabel: "Conta Corrente", // <-- CAMPO ADICIONADO
+      accountModel: "Conta Investimento - PJ",
       branchNumber: "0001"
     },
     {
       accountNumber: "4.785.096-8",
       bank: 161,
       accountType: 5,
+      accountTypeLabel: "Conta Corrente", // <-- CAMPO ADICIONADO
       accountModel: "Conta Investimento - PJ",
       branchNumber: "0001"
     }
@@ -18,7 +22,7 @@ const accountsProfilesResponse = {
   profiles: [
     {
       profileId: 10,
-      profileName: "Cobrança Online + Consultas" 
+      profileName: "Cobrança Online + Consultas"
     },
     {
       profileId: 11,
@@ -31,12 +35,11 @@ const accountsProfilesResponse = {
   ]
 };
 
-// Vamos criar um objeto para simular diferentes clientes no futuro
-// Por enquanto, todos retornam o mesmo mock.
+// Objeto para simular diferentes clientes
 const clientsDetails = {
-  '1': accountsProfilesResponse, // Detalhes para o cliente com ID 1
-  '2': accountsProfilesResponse, // Cliente 2 retorna o mesmo por enquanto
-  '3': accountsProfilesResponse, // Cliente 3 retorna o mesmo por enquanto
+  '1': accountsProfilesResponse,
+  '2': accountsProfilesResponse,
+  '3': accountsProfilesResponse,
   'default': accountsProfilesResponse
 }
 
