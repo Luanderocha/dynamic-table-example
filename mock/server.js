@@ -1,32 +1,55 @@
 const express = require("express");
 const cors = require("cors");
-const clientsResponse = require("./data/clients-paginated");
+
 const clientsDetails = require("./data/accounts-profiles");
+const generateAllClients = require("./data/clients-paginated");
 
 const app = express();
 const PORT = 3000;
 
+const allClients = generateAllClients();
+
 app.use(cors());
 
-// --- Endpoint 1: Lista de Clientes com Paginação ---
-// Rota: /client-management/v1/clients
-app.get("/client-management/v1/clients", (req, res) => {
-  // 'req.query' nos permite ler parâmetros da URL, como ?page=1
-  const page = req.query.page || 1;
+app.get('/client-management/v1/clients', (req, res) => {
+  
+  const requestedPage = parseInt(req.query.page || '1');
+  const requestedSize = parseInt(req.query.size || '5'); 
+  const actualSizePerPage = 5; 
 
-  console.log(
-    `[${new Date().toLocaleTimeString()}] GET /client-management/v1/clients?page=${page}`
-  );
+  const totalElements = allClients.length;
+  const totalPages = Math.ceil(totalElements / actualSizePerPage);
 
-  // No futuro, podemos alterar 'clientsResponse' com base na 'page'
+  let clientsToSend = [];
+  
+  if (requestedPage === 1 && requestedSize >= totalElements) {
+      clientsToSend = allClients;
+  } else {
+      const startIndex = (requestedPage - 1) * actualSizePerPage;
+      const endIndex = requestedPage * actualSizePerPage;
+      clientsToSend = allClients.slice(startIndex, endIndex);
+  }
 
+  const response = {
+    clients: clientsToSend,
+    pagination: {
+      firstPage: requestedPage === 1,
+      lastPage: requestedPage === totalPages,
+      number: requestedPage, 
+      size: actualSizePerPage, 
+      totalElements: totalElements, 
+      totalPages: totalPages 
+    }
+  };
+
+  console.log(`[${new Date().toLocaleTimeString()}] GET /clients?page=${requestedPage}&size=${requestedSize} - Retornando ${clientsToSend.length} de ${totalElements} clientes.`);
+  
   setTimeout(() => {
-    res.json(clientsResponse);
-  }, 500); // Delay de 500ms
+    res.json(response);
+  }, 500);
 });
 
-// --- Endpoint 2: Contas e Perfis de um Cliente Específico ---
-// Rota: /client-management/v1/accounts?clientId=123
+
 app.get("/client-management/v1/accounts", (req, res) => {
   const clientId = req.query.clientId;
 
@@ -38,15 +61,13 @@ app.get("/client-management/v1/accounts", (req, res) => {
     `[${new Date().toLocaleTimeString()}] GET /client-management/v1/accounts?clientId=${clientId}`
   );
 
-  // Seleciona os dados com base no ID ou usa o 'default'
   const responseData = clientsDetails[clientId] || clientsDetails["default"];
 
   setTimeout(() => {
     res.json(responseData);
-  }, 800); // Delay maior para simular uma chamada mais complexa
+  }, 800);
 });
 
-// Inicia o servidor
 app.listen(PORT, () => {
   console.log(`Servidor mock rodando em http://localhost:${PORT}`);
   console.log("Endpoints disponíveis:");

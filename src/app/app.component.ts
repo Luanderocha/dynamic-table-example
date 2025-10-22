@@ -1,11 +1,13 @@
 import { DOCUMENT } from '@angular/common';
 import { Component, Inject, OnInit, Renderer2 } from '@angular/core';
+import { UserRegisterStateService } from './services/user-register-state.service';
 import { Step } from './stepper/step.interface';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
+  providers: [UserRegisterStateService],
 })
 export class AppComponent implements OnInit {
   title = 'custom-table';
@@ -150,7 +152,8 @@ export class AppComponent implements OnInit {
 
   constructor(
     private renderer: Renderer2,
-    @Inject(DOCUMENT) private document: Document
+    @Inject(DOCUMENT) private document: Document,
+    private stateService: UserRegisterStateService
   ) {}
 
   ngOnInit(): void {
@@ -179,5 +182,19 @@ export class AppComponent implements OnInit {
 
   onPageChanged(newPage: number): void {
     this.currentPage = newPage;
+  }
+
+  // O botão 'Continuar' do seu stepper vai checar isso
+  isStepValid(): boolean {
+    return this.stateService.isFormValid;
+  }
+
+  // O botão 'Continuar' do seu stepper vai chamar isso
+  onContinue(): void {
+    if (this.isStepValid()) {
+      const formData = this.stateService.getMappedValue();
+      console.log('Dados do passo 2:', formData);
+      // ... (navega para o próximo passo)
+    }
   }
 }

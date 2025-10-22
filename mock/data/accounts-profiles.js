@@ -1,4 +1,3 @@
-// mock/data/accounts-profiles.js
 
 const accountsProfilesResponse = {
   accounts: [
@@ -6,7 +5,7 @@ const accountsProfilesResponse = {
       accountNumber: "4.785.096-7",
       bank: 161,
       accountType: 5,
-      accountTypeLabel: "Conta Corrente", // <-- CAMPO ADICIONADO
+      accountTypeLabel: "Conta Corrente",
       accountModel: "Conta Investimento - PJ",
       branchNumber: "0001"
     },
@@ -14,7 +13,7 @@ const accountsProfilesResponse = {
       accountNumber: "4.785.096-8",
       bank: 161,
       accountType: 5,
-      accountTypeLabel: "Conta Corrente", // <-- CAMPO ADICIONADO
+      accountTypeLabel: "Conta Corrente",
       accountModel: "Conta Investimento - PJ",
       branchNumber: "0001"
     }
@@ -35,7 +34,6 @@ const accountsProfilesResponse = {
   ]
 };
 
-// Objeto para simular diferentes clientes
 const clientsDetails = {
   '1': accountsProfilesResponse,
   '2': accountsProfilesResponse,

@@ -1,191 +1,155 @@
 // src/app/accordion-list/accordion-list.component.ts
 
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray, Validators, AbstractControl } from '@angular/forms';
-import { ClientManagementService } from '../services/client-management.service';
-import { Account, Client, Profile } from '../services/client-management.models';
-import { Subscription, merge, of } from 'rxjs';
-import { startWith, catchError } from 'rxjs/operators';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
+import { Subscription } from 'rxjs';
+import { Pagination, Profile } from '../services/client-management.models';
+import { UserRegisterStateService } from '../services/user-register-state.service';
 
 @Component({
   selector: 'app-accordion-list',
   templateUrl: './accordion-list.component.html',
-  styleUrls: ['./accordion-list.component.scss']
+  styleUrls: ['./accordion-list.component.scss'],
 })
 export class AccordionListComponent implements OnInit, OnDestroy {
-
-  form: FormGroup;
+  form!: FormGroup;
   isLoadingClients = true;
-  private subscriptions = new Subscription();
 
-  constructor(
-    private fb: FormBuilder,
-    private clientService: ClientManagementService
-  ) {
-    this.form = this.fb.group({
-      clients: this.fb.array([])
-    });
-  }
+  public paginationInfo: Pagination | null = null;
+  private paginationSub!: Subscription;
+
+  // O array completo com todos os clientes (do serviço)
+  private allClientControls: AbstractControl[] = [];
+
+  // O array fatiado com os clientes visíveis (CORRIGIDO: Tipo FormGroup[])
+  public paginatedClientControls: FormGroup[] = [];
+
+  constructor(private stateService: UserRegisterStateService) {}
 
   ngOnInit(): void {
-    this.loadInitialClients();
+    this.form = this.stateService.getForm();
+    this.allClientControls = (this.form.get('clients') as FormArray).controls;
+
+    
+
+    // A subscrição da paginação ainda é necessária para MUDANÇAS de página
+    this.paginationSub = this.stateService.paginationInfo.subscribe((info) => {
+      // SÓ atualiza a paginação E a view SE NÃO for o carregamento inicial
+      // (a view inicial será atualizada pelo initializeClientState)
+      if (!this.isLoadingClients) {
+        this.paginationInfo = info;
+        this.updatePaginatedView();
+      }
+    });
+
+    // Se o array de clientes no serviço está vazio, chama o inicializador
+    if (this.allClientControls.length === 0) {
+      this.isLoadingClients = true;
+      this.stateService.initializeClientState().subscribe({
+        next: () => {
+          // --- CORREÇÃO ---
+          // Define a info de paginação APÓS carregar TUDO
+          this.paginationInfo = this.stateService.paginationInfo.value;
+          // Atualiza a view APÓS carregar TUDO
+          this.updatePaginatedView();
+          this.isLoadingClients = false; // Só libera a tela agora
+        },
+        error: (err) => {
+          console.error('Erro ao inicializar estado:', err);
+          this.isLoadingClients = false;
+        },
+      });
+    } else {
+      // O estado já estava carregado. Pega a paginação atual do serviço.
+      this.paginationInfo = this.stateService.paginationInfo.value;
+      this.isLoadingClients = false;
+      this.updatePaginatedView(); // Atualiza a view com a página correta
+    }
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
-  }
-
-  get clients(): FormArray {
-    return this.form.get('clients') as FormArray;
-  }
-
-  loadInitialClients(): void {
-    this.isLoadingClients = true;
-    const sub = this.clientService.getClients().subscribe(response => {
-      response.clients.forEach(client => {
-        this.clients.push(this.createClientFormGroup(client));
-      });
-      this.isLoadingClients = false;
-    });
-    this.subscriptions.add(sub);
-  }
-
-  createClientFormGroup(client: Client): FormGroup {
-    const clientFormGroup = this.fb.group({
-      clientIbpjId: [client.clientIbpjId], corporateName: [client.corporateName],
-      document: [client.document], currentClient: [client.currentClient],
-      isSelected: [false], status: ['Pendente'], profiles: [[]],
-      isDataLoaded: [false], isLoadingDetails: [false],
-      accounts: this.fb.array([])
-    });
-    
-    const isSelectedControl = clientFormGroup.get('isSelected');
-    const accountsControl = clientFormGroup.get('accounts') as FormArray;
-    const statusControl = clientFormGroup.get('status');
-    
-    if (isSelectedControl && accountsControl && statusControl) {
-      const statusSub = merge(
-        isSelectedControl.valueChanges,
-        accountsControl.statusChanges
-      ).pipe(startWith(null)).subscribe(() => {
-        const isSelected = isSelectedControl.value;
-        const accountsValid = accountsControl.valid;
-        if (isSelected && accountsValid) {
-          statusControl.setValue('Configurada', { emitEvent: false });
-        } else {
-          statusControl.setValue('Pendente', { emitEvent: false });
-        }
-      });
-      this.subscriptions.add(statusSub);
+    if (this.paginationSub) {
+      this.paginationSub.unsubscribe();
     }
-    return clientFormGroup;
-  }
-
-  onAccordionOpen(clientGroup: AbstractControl): void {
-    const group = clientGroup as FormGroup;
-    if (group.get('isDataLoaded')?.value === true) { return; }
-    const clientId = group.get('clientIbpjId')?.value;
-    if (!clientId) { console.error('ID do cliente não encontrado'); return; }
-    
-    group.get('isLoadingDetails')?.setValue(true);
-    
-    const sub = this.clientService.getAccountDetails(clientId).pipe(
-      catchError(error => {
-        console.error('Erro ao buscar detalhes das contas:', error);
-        group.get('isLoadingDetails')?.setValue(false);
-        return of(null);
-      })
-    ).subscribe(response => {
-      if (!response) { return; }
-      
-      const semAcessoProfile: Profile = { profileId: 0, profileName: "Sem acesso" };
-      const completeProfiles = [semAcessoProfile, ...response.profiles];
-      group.get('profiles')?.setValue(completeProfiles);
-      
-      const accountsFormArray = group.get('accounts') as FormArray;
-      if (accountsFormArray) {
-        response.accounts.forEach(account => {
-          accountsFormArray.push(this.createAccountFormGroup(account));
-        });
-        
-        // Chama a nova lógica de propagação
-        this.setupProfilePropagation(accountsFormArray);
-      }
-      group.get('isDataLoaded')?.setValue(true);
-      group.get('isLoadingDetails')?.setValue(false);
-    });
-    this.subscriptions.add(sub);
-  }
-
-  createAccountFormGroup(account: Account): FormGroup {
-    return this.fb.group({
-      // Dados da API (para exibição)
-      accountNumber: [account.accountNumber],
-      accountTypeLabel: [account.accountTypeLabel], // <-- NOVO CAMPO
-      accountModel: [account.accountModel],
-      branchNumber: [account.branchNumber],
-      bank: [account.bank],
-      accountType: [account.accountType],
-      
-      // Controles de Formulário
-      accessProfile: [0, Validators.required],
-      useProfileForAll: [false] // <-- NOVO CONTROLE
-    });
   }
 
   /**
-   * Ouve as mudanças no 'accessProfile' e 'useProfileForAll' da PRIMEIRA linha
-   * e propaga o valor para as demais linhas.
+   * Chamado pelo (pageChange) do paginador.
+   * Apenas informa o serviço da nova página. Não chama API.
    */
-  private setupProfilePropagation(accountsArray: FormArray): void {
-    if (accountsArray.length <= 1) {
-      return; // Não há para onde propagar
-    }
+  onPageChange(page: number): void {
+    this.stateService.setCurrentPage(page);
+  }
 
-    const firstAccount = accountsArray.at(0) as FormGroup;
-    const profileControl = firstAccount.get('accessProfile');
-    const useForAllControl = firstAccount.get('useProfileForAll');
-
-    if (!profileControl || !useForAllControl) {
+  /**
+   * Pega o array completo de clientes (allClientControls)
+   * e o fatia com base no paginationInfo.
+   */
+  private updatePaginatedView(): void {
+    // Se não houver info de paginação (antes da 1ª carga), não faz nada ou mostra vazio
+    if (!this.paginationInfo) {
+      this.paginatedClientControls = []; // Mostra vazio até carregar
       return;
     }
 
-    const sub = merge(profileControl.valueChanges, useForAllControl.valueChanges)
-      .subscribe(() => {
-        if (useForAllControl.value === true) {
-          const profileIdToSet = profileControl.value;
-          
-          accountsArray.controls.forEach((control, index) => {
-            if (index > 0) {
-              control.get('accessProfile')?.setValue(profileIdToSet);
-            }
-          });
-        }
+    // Declaração correta das variáveis
+    const page = this.paginationInfo.number;
+    const size = this.paginationInfo.size;
+    const startIndex = (page - 1) * size;
+    const endIndex = page * size;
+
+    // Fatia o array e garante que o tipo seja FormGroup[]
+    this.paginatedClientControls = this.allClientControls.slice(
+      startIndex,
+      endIndex
+    ) as FormGroup[];
+  }
+
+  // --- O resto dos métodos permanece o mesmo ---
+
+  onAccordionOpen(clientGroup: AbstractControl): void {
+    const group = clientGroup as FormGroup;
+    if (group.get('isDataLoaded')?.value === true) {
+      return;
+    }
+
+    const clientId = group.get('clientIbpjId')?.value;
+    group.get('isLoadingDetails')?.setValue(true);
+
+    this.stateService.getAccountDetails(clientId).subscribe((response) => {
+      if (!response) {
+        group.get('isLoadingDetails')?.setValue(false);
+        return;
+      }
+
+      const semAcessoProfile: Profile = {
+        profileId: 0,
+        profileName: 'Sem acesso',
+      };
+      group.get('profiles')?.setValue([semAcessoProfile, ...response.profiles]);
+
+      const accountsFormArray = group.get('accounts') as FormArray;
+      response.accounts.forEach((account) => {
+        accountsFormArray.push(
+          this.stateService.buildAccountFormGroup(account)
+        );
       });
-    
-    this.subscriptions.add(sub);
-  }
 
-  getAccountControls(clientControl: AbstractControl): AbstractControl[] {
-    const accounts = (clientControl as FormGroup).get('accounts') as FormArray;
-    return accounts ? accounts.controls : [];
-  }
+      this.stateService.setupProfilePropagation(accountsFormArray);
 
-  getProfileOptions(clientControl: AbstractControl): Profile[] {
-    const profilesControl = (clientControl as FormGroup).get('profiles');
-    return profilesControl ? profilesControl.value : [];
+      group.get('isDataLoaded')?.setValue(true);
+      group.get('isLoadingDetails')?.setValue(false);
+    });
   }
 
   limparSelecao(clientGroup: AbstractControl): void {
     const group = clientGroup as FormGroup;
     const accountsArray = group.get('accounts') as FormArray;
 
-    accountsArray.controls.forEach(accountControl => {
+    accountsArray.controls.forEach((accountControl) => {
       accountControl.get('accessProfile')?.setValue(0);
     });
-    // Reseta também o checkbox "Usar em todas"
     accountsArray.at(0)?.get('useProfileForAll')?.setValue(false);
-
     group.get('isSelected')?.setValue(false);
   }
 
@@ -196,20 +160,18 @@ export class AccordionListComponent implements OnInit, OnDestroy {
     }
     group.get('isSelected')?.setValue(true);
   }
-  
+
   onSubmit(): void {
-    console.log('%c--- PAYLOAD MAPEADO PARA O BACKEND ---', 'color: #007bff; font-weight: bold;');
-    const rawFormValue = this.form.getRawValue();
-    const selectedClientsRaw = rawFormValue.clients.filter((client: any) => client.isSelected);
-    const payload = {
-      clients: selectedClientsRaw.map((client: any) => ({
-        clientId: client.clientIbpjId,
-        accounts: client.accounts.map((account: any) => ({
-          accountType: account.accountType, agency: account.branchNumber, 
-          accountNumber: account.accountNumber, profileId: account.accessProfile 
-        }))
-      }))
-    };
-    console.log(payload);
+    console.log(this.stateService.getMappedValue());
+  }
+
+  getAccountControls(clientControl: AbstractControl): AbstractControl[] {
+    const accounts = (clientControl as FormGroup).get('accounts') as FormArray;
+    return accounts ? accounts.controls : [];
+  }
+
+  getProfileOptions(clientControl: AbstractControl): Profile[] {
+    const profilesControl = (clientControl as FormGroup).get('profiles');
+    return profilesControl ? profilesControl.value : [];
   }
 }

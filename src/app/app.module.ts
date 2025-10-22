@@ -8,9 +8,10 @@ import { AccordionComponent } from './accordion/accordion.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DynamicTableComponent } from './dynamic-table/dynamic-table.component';
+import { PaginationComponent } from './pagination/pagination.component';
 import { SelectCustomComponent } from './select-custom/select-custom.component';
-import { StepperComponent } from './stepper/stepper.component';
 import { SelectComponent } from './select/select.component';
+import { StepperComponent } from './stepper/stepper.component';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { SelectComponent } from './select/select.component';
     AccordionListComponent,
     AccordionComponent,
     SelectComponent,
+    PaginationComponent,
   ],
   imports: [
     BrowserModule,

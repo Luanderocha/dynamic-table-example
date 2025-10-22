@@ -1,11 +1,14 @@
-<div *ngIf="isLoadingClients">
+<div *ngIf="isLoadingClients" style="padding: 24px; text-align: center;">
   Carregando lista de clientes...
 </div>
 
-<form [formGroup]="form" class="tabela-container" *ngIf="!isLoadingClients">
-  <div formArrayName="clients">
-    <div *ngFor="let client of clients.controls; let i = index" class="tabela-linha">
-      <div [formGroupName]="i">
+<div *ngIf="!isLoadingClients">
+  
+  <div class="tabela-container">
+    
+    <div *ngFor="let client of paginatedClientControls" class="tabela-linha">
+      
+      <div [formGroup]="client">
         
         <app-accordion 
           formControlName="isSelected"
@@ -44,7 +47,6 @@
                   <div class="cell">{{ account.get('accountNumber')?.value }}</div>
                   <div class="cell">{{ account.get('accountTypeLabel')?.value }}</div>
                   <div class="cell">{{ account.get('accountModel')?.value }}</div>
-                  
                   <div class="cell profile-cell">
                     <app-select
                       formControlName="accessProfile"
@@ -55,23 +57,21 @@
                     </app-select>
 
                     <div class="use-for-all-container">
-                      
                       <ng-container *ngIf="j === 0">
                         <input type="checkbox" formControlName="useProfileForAll" id="{{client.get('clientIbpjId')?.value}}-useAll">
                         <label [for]="client.get('clientIbpjId')?.value + '-useAll'">
                           Usar esse perfil em todas as contas dessa empresa
                         </label>
                       </ng-container>
-
                     </div>
-                    </div>
+                  </div>
                 </div>
               </div>
 
             </div>
 
             <div class="inner-actions-container" *ngIf="client.get('isDataLoaded')?.value && !client.get('isLoadingDetails')?.value">
-              <button type="button" 
+              <button type.="button" 
                       class="btn btn-secondary"
                       (click)="limparSelecao(client)">
                   Limpar seleção
@@ -95,4 +95,9 @@
   <div class="footer-actions-container">
     <button type="button" class="btn btn-primary" (click)="onSubmit()">Salvar e Ver no Console</button>
   </div>
-</form>
+</div> <app-pagination 
+  *ngIf="!isLoadingClients && paginationInfo && paginationInfo.totalPages > 1"
+  [currentPage]="paginationInfo.number"
+  [totalPages]="paginationInfo.totalPages"
+  (pageChange)="onPageChange($event)">
+</app-pagination>

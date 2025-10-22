@@ -1,32 +1,19 @@
-const clientsResponse = {
-  clients: [
-    {
-      clientIbpjId: 1,
-      corporateName: "Empresa Alpha LTDA",
-      document: "00.000.000/0001-00",
-      currentClient: true,
-    },
-    {
-      clientIbpjId: 2,
-      corporateName: "Empresa Beta S/A",
-      document: "00.000.000/0001-01",
-      currentClient: false,
-    },
-    {
-      clientIbpjId: 3,
-      corporateName: "Empresa Gama Corp",
-      document: "00.000.000/0001-02",
-      currentClient: false,
-    },
-  ],
-  pagination: {
-    firstPage: true,
-    lastPage: false,
-    number: 1,
-    size: 20,
-    totalElements: 45, // Exemplo: 45 clientes no total
-    totalPages: 3, // Exemplo: 3 páginas no total
-  },
-};
 
-module.exports = clientsResponse;
+function generateAllClients() {
+  const allClients = [];
+  for (let i = 1; i <= 15; i++) { 
+    let id = i;
+    let name = 'Empresa ' + String.fromCharCode(64 + i);
+    let doc = `00.000.000/000${i < 10 ? '0' : ''}${i}-${i < 10 ? i : i % 10}`;
+    
+    allClients.push({
+      clientIbpjId: id,
+      corporateName: `${name} LTDA`,
+      document: doc,
+      currentClient: (i === 1)
+    });
+  }
+  return allClients;
+}
+
+module.exports = generateAllClients;

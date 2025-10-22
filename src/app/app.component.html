@@ -12,20 +12,19 @@
 <!-- <div class="select-component">
   <app-select-custom></app-select-custom>
 </div> -->
-<!-- <div style="margin: 100px;">
+<!-- <div style="margin: 100px">
   <app-stepper [steps]="meusSteps" #stepper>
     <ng-container *ngIf="stepper.currentStepIndex === 0">
       <p>Conteúdo do Step 1: Login</p>
     </ng-container>
 
     <ng-container *ngIf="stepper.currentStepIndex === 1">
-      <p>Conteúdo do Step 2: Meu Perfil</p>
     </ng-container>
-
+    
     <ng-container *ngIf="stepper.currentStepIndex === 2">
       <p>Conteúdo do Step 3: Gestão de Perfis</p>
     </ng-container>
-
+    
     <ng-container *ngIf="stepper.currentStepIndex === 3">
       <p>Conteúdo do Step 4: Confirmação</p>
     </ng-container>
@@ -33,3 +32,5 @@
 </div> -->
 
 <app-accordion-list></app-accordion-list>
+
+<button (click)="onContinue()">teste</button>
